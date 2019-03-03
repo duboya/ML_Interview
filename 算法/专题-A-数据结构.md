@@ -458,29 +458,40 @@ public:
 
 **二叉树**
 
-```
-// 未测试
-#include <deque>
+求根节点到树中任一结点的路径很有用，比如要求两个节点最近公共父节点的时候，就可以先分别生成父节点到子节点的路径。
+然后就换成寻找两个链表中最后一个相同元素的问题。
 
-bool getPath(TreeNode* root, TreeNode* p, deque<TreeNode*>& path) {
-    if (root == nullptr)
+思路很简单，递归寻找，把中间经过的节点放入ArrayList中，但有个地方需要用到回溯，否则返回值会不好判断。
+
+> 这里的回溯对应的是 `pathArray.add(root.val);`
+
+写出来代码会比较臃长。
+
+
+```cpp
+public static boolean getPathFromRoot(TreeNode root, TreeNode node, ArrayList<Integer> pathArray) {
+        if(root==null||node==null) {
+            return false;
+        }
+        pathArray.add(root.val);
+        
+        if(root.val==node.val) {
+            return true;
+        }
+        if(root.left!=null) {
+            if(getPathFromRoot(root.left,node,pathArray)==true) {
+                return true;
+            }
+        }
+        if(root.right!=null) {
+            if(getPathFromRoot(root.right,node,pathArray)==true) {
+                return true;
+            }
+        }
+        //回溯
+        pathArray.remove(pathArray.size() - 1);
         return false;
-
-    path.push_back(root);
-    if (p == root)
-        return true;
-
-    bool found = false;
-    if (!found)
-        found = getPath(root->left, p, path);
-    if (!found)
-        found = getPath(root->right, p, path);
-
-    if (!found)
-        path.pop_back();
-
-    return found;
-}
+    }
 ```
 
 **非二叉树**
@@ -601,37 +612,29 @@ public:
 
 **代码 2**
 
-- 代码量少一点，但是遍历的长度要多一点。
+- 这道题还有一种解法，跟上面的方法类似，但是不用快慢指针，一个指针就够了，原理是先遍历整个链表获得链表长度n，然后此时把链表头和尾链接起来，在往后走n - k % n个节点就到达新链表的头结点前一个点，这时断开链表即可，代码如下:
 
 ```
-class Solution:
-    def rotateRight(self, h, k):
-        """
-        :type h: ListNode
-        :type k: int
-        :rtype: ListNode
-        """
-        if not h or k == 0:
-            return h
-        
-        n = 1  # 记录链表的长度，因为只遍历到最后一个非空节点，所以从 1 开始
-        r = h  # tail
-        while r.next is not None:
-            n += 1
-            r = r.next
-        
-        r.next = h  # 构成环
-        
-        k %= n 
-        t = n - k
-        while t > 0:
-            r = r.next
-            t -= 1
-        
-        h = r.next
-        r.next = None  # 断开 链表
-            
-        return h
+class Solution {
+public:
+    ListNode *rotateRight(ListNode *head, int k) {
+        if (!head) return NULL;
+        int n = 1;
+        ListNode *cur = head;
+        while (cur->next) {
+            ++n;
+            cur = cur->next;
+        }
+        cur->next = head;
+        int m = n - k % n;
+        for (int i = 0; i < m; ++i) {
+            cur = cur->next;
+        }
+        ListNode *newhead = cur->next;
+        cur->next = NULL;
+        return newhead;
+    }
+};
 ```
 
 ## 反转链表
@@ -848,7 +851,7 @@ public:
 
 > [链表排序（冒泡、选择、插入、快排、归并、希尔、堆排序） - tenos](https://www.cnblogs.com/TenosDoIt/p/3666585.html) - 博客园
 
-### 链表快排
+### 链表快排（没搞明白，mark 一下）
 
 > LeetCode/[148. 排序链表](https://leetcode-cn.com/problems/sort-list/description/)
 
@@ -876,7 +879,7 @@ public:
 
 - 参考数组快排中的写法，这里选取**第一个元素**作为枢纽
 
-```
+```cpp
 /**
  * Definition for singly-linked list.
  * struct ListNode {
@@ -1013,7 +1016,7 @@ public:
 
 **C++**
 
-```
+```cpp
 /**
  * Definition for singly-linked list.
  * struct ListNode {
@@ -1022,56 +1025,49 @@ public:
  *     ListNode(int x) : val(x), next(NULL) {}
  * };
  */
- 
 class Solution {
-    ListNode* merge(ListNode *h1, ListNode *h2) {  // 排序两个链表
-        if (h1 == nullptr) return h2;
-        if (h2 == nullptr) return h1;
-        
-        ListNode* h;  // 合并后的头结点
-        if (h1->val < h2->val) {
-            h = h1;
-            h1 = h1->next;
-        } else {
-            h = h2;
-            h2 = h2->next;
-        }
-        
-        ListNode* p = h;
-        while (h1 && h2) {
-            if (h1->val < h2->val) {
-                p->next = h1;
-                h1 = h1->next;
-            } else {
-                p->next = h2;
-                h2 = h2->next;
-            }
-            p = p->next;
-        }
-        
-        if (h1) p->next = h1;
-        if (h2) p->next = h2;
-        
-        return h;
-    }
-    
 public:
-    ListNode* sortList(ListNode* h) {
-        if (h == nullptr || h->next == nullptr)
-            return h;
-        
-        auto f = h, s = h;  // 快慢指针 fast & slow
-        while (f->next && f->next->next) {
-            f = f->next->next;
-            s = s->next;
+    ListNode* sortList(ListNode* head) {
+        if(head == NULL || head->next == NULL){
+            return head;
         }
-        f = s->next;  // 中间节点
-        s->next = nullptr; // 断开
+        ListNode* pre = head;
+        ListNode* fast = head;
+        ListNode* slow = head;
         
-        h = sortList(h);  // 前半段排序
-        f = sortList(f);  // 后半段排序
+        while(fast && fast->next){
+            pre = slow;
+            slow = slow->next;
+            fast = fast->next->next;
+        }
+        pre->next = NULL;
+        return MergeSort(sortList(head), sortList(slow));
         
-        return merge(h, f);
+        
+    }
+    ListNode* MergeSort(ListNode* l1, ListNode* l2){
+        ListNode* root = new ListNode(-1);
+        ListNode* node = root;
+        while(l1 && l2){
+            if(l1->val < l2->val){
+                node->next = l1;
+                l1 = l1->next;
+            }
+            else{
+                node->next = l2;
+                l2 = l2->next;
+            }
+            node = node->next;
+        }
+        if(l1){
+            node->next = l1;
+        }
+        else{
+            node->next = l2;
+        }
+        node = root->next;
+        delete root;
+        return node;
     }
 };
 ```
@@ -1328,29 +1324,59 @@ public:
 ```
 class Solution {
 public:
-    bool searchMatrix(vector<vector<int>>& M, int t) {
-        if (M.size() < 1 || M[0].size() < 1)
-            return false;
-        
-        int m = M.size();
-        int n = M[0].size();
-        
-        int lo = 0;
-        int hi = m * n;
-        
-        while (lo + 1 < hi) {
-            int mid = lo + (hi - lo) / 2;
-            if (M[mid / n][mid % n] > t) {
-                hi = mid;
-            } else {
-                lo = mid;
-            } 
+    bool searchMatrix(vector<vector<int>>& matrix, int target) {
+        if (matrix.empty() || matrix[0].empty()) return false;
+        if (target < matrix[0][0] || target > matrix.back().back()) return false;
+        int m = matrix.size(), n = matrix[0].size();
+        int left = 0, right = m * n - 1;
+        while (left <= right) {
+            int mid = (left + right) / 2;
+            if (matrix[mid / n][mid % n] == target) return true;
+            else if (matrix[mid / n][mid % n] < target) left = mid + 1;
+            else right = mid - 1;
         }
-        
-        return M[lo / n][lo % n] == t;
+        return false;
     }
 };
 ```
+
+
+
+
+
+这道题要求搜索一个二维矩阵，由于给的矩阵是有序的，所以很自然的想到要用[二分查找法](http://zh.wikipedia.org/wiki/%E6%8A%98%E5%8D%8A%E6%90%9C%E7%B4%A2%E7%AE%97%E6%B3%95)，我们可以在第一列上先用一次二分查找法找到目标值所在的行的位置，然后在该行上再用一次二分查找法来找是否存在目标值，代码如下：
+
+
+
+```cpp
+// Two binary search
+class Solution {
+public:
+    bool searchMatrix(vector<vector<int> > &matrix, int target) {
+        if (matrix.empty() || matrix[0].empty()) return false;
+        if (target < matrix[0][0] || target > matrix.back().back()) return false;
+        int left = 0, right = matrix.size() - 1;
+        while (left <= right) {
+            int mid = (left + right) / 2;
+            if (matrix[mid][0] == target) return true;
+            else if (matrix[mid][0] < target) left = mid + 1;
+            else right = mid - 1;
+        }
+        int tmp = right;
+        left = 0;
+        right = matrix[tmp].size() - 1;
+        while (left <= right) {
+            int mid = (left + right) / 2;
+            if (matrix[tmp][mid] == target) return true;
+            else if (matrix[tmp][mid] < target) left = mid + 1;
+            else right = mid - 1;
+        }
+        return false;
+    }
+};
+```
+
+
 
 ### 搜索二维矩阵 2
 

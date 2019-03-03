@@ -72,7 +72,7 @@ public:
 		return pHead;
 	}
 };
-
+/*
 int main()
 {
 	ListNode list[7];
@@ -108,3 +108,4 @@ int main()
 
 	return 0;
 }
+*/
