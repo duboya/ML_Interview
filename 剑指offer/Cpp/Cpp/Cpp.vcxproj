@@ -140,6 +140,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="..\..\..\算法\剑指offer\剑指offer_C++\链表中倒数第 K 个结点.cpp" />
+    <ClCompile Include="MergeSort.cpp" />
     <ClCompile Include="二维数组中的查找.cpp" />
     <ClCompile Include="从尾到头打印链表.cpp" />
   </ItemGroup>

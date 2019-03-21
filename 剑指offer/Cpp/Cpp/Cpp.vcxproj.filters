@@ -24,5 +24,8 @@
     <ClCompile Include="..\..\..\算法\剑指offer\剑指offer_C++\链表中倒数第 K 个结点.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="MergeSort.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>
