@@ -16,11 +16,11 @@ Index
 
 ### 取模运算的性质
 <div align="center"><a href="http://www.codecogs.com/eqnedit.php?latex=\fn_cs&space;\begin{aligned}&space;&(a&plus;b)\;\%\;m=(a\;\%\;m&plus;b\;\%\;m)\;\%\;m\\&space;&(a-b)\;\%\;m=(a\;\%\;m-b\;\%\;m{\color{Red}\;&plus;\;m})\;\%\;m\\&space;&ab\;\%\;m=(a\;\%\;m)(b\;\%\;m)\;\%\;m&space;\end{aligned}"><img src="../_assets/公式_20180811215806.png" height="" /></a></div>
-
 - 因为 `(a%n) - (b%n)` 可能小于 `n`，所以 `+n`
 - 因为 `(a%n)(b%n)` 可能溢出，计算前应该强转为 `long long`
 
 **Code - C++**
+
 - 输入 `a` 为长度小于 1000 的字符串，`b` 为小于 `100000` 的整数
   ```C++
   int big_mod(const string& a, int b) {
@@ -77,3 +77,16 @@ Index
 
 ## 大数加/减/乘/除
 > [大数的四则运算（加法、减法、乘法、除法） - 落枫飘飘](https://www.cnblogs.com/wuqianling/p/5387099.html) - 博客园 
+
+
+
+
+
+
+
+```
+hk5-sta140.wepi.pw
+20524
+mfSqXuCQHbrkx4k
+```
+
